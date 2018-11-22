@@ -3,7 +3,10 @@ var gulp = require('gulp'),
     cssnano = require('gulp-cssnano'),
     autoprefixer = require('gulp-autoprefixer'),
     concat = require('gulp-concat'),
-    uglify = require('gulp-uglify');
+    uglify = require('gulp-uglify'),
+    imagemin = require('gulp-imagemin'),
+    mozjpeg = require('imagemin-mozjpeg'),
+    pngquant = require('imagemin-pngquant');
 
 gulp.task('sass', function() {
     return gulp.src('src/sass/**/*.sass')
@@ -22,16 +25,29 @@ gulp.task('csslibs', function(){
 
 gulp.task('jslibs', function() {
 	return gulp.src('src/jslibs/*.js')
-		.pipe(concat('libs.min.js'))
-		.pipe(uglify())
-		.pipe(gulp.dest('dist/js'));
+	.pipe(concat('libs.min.js'))
+	.pipe(uglify())
+	.pipe(gulp.dest('dist/js'));
 });
 
 
 gulp.task('js', function() {
 	return gulp.src('src/js/main.js')
-		.pipe(uglify())
-		.pipe(gulp.dest('dist/js'));
+	.pipe(uglify())
+	.pipe(gulp.dest('dist/js'));
+});
+
+gulp.task('images', function() {
+    return gulp.src('src/img/*')
+    .pipe(imagemin([
+        imagemin.gifsicle({interlaced: true}),
+        imagemin.jpegtran({progressive: true}),
+        mozjpeg({progressive: true}),
+        imagemin.optipng({optimizationLevel: 7}),
+        pngquant({quality: '85-100'}),
+        imagemin.svgo({plugins: [{removeViewBox: true}]})
+    ]))
+    .pipe(gulp.dest('dist/img'));
 });
 
 gulp.task('watch', function() {
