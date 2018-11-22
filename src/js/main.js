@@ -1,3 +1,1 @@
-console.log('hasdf');
-console.log('79845435');
-
+console.log('src/main.js')
